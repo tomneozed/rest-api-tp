@@ -26,19 +26,17 @@ public class POIController {
 
     @GetMapping(path = "/{id}")
     POIItem findOne(@PathVariable long id) {
-        //TODO: return the result of the lookup invocation within the service layer
-        return null;
+        return poiService.findOne(id);
     }
 
     @DeleteMapping(path = "/{id}")
     @ResponseStatus(code = HttpStatus.OK)
     void delete(@PathVariable long id) {
-        //TODO: invoke the deletion of the matching entity by the service layer
+        poiService.delete(id);
     }
 
     @PostMapping
     POIItem save(@RequestBody POIDefinition poi) {
-        //TODO: invoke the persistence of the poi parameter by the service layer, and return the persisted data
-        return null;
+        return poiService.save(poi);
     }
 }

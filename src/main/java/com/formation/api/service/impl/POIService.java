@@ -3,6 +3,8 @@ package com.formation.api.service.impl;
 import com.formation.api.dto.POIDefinition;
 import com.formation.api.dto.POIItem;
 import com.formation.api.dto.POIListItem;
+import com.formation.api.exception.NotFoundException;
+import com.formation.api.persistence.entity.POI;
 import com.formation.api.persistence.repository.POIRepository;
 import com.formation.api.service.IPOIService;
 import org.springframework.stereotype.Service;
@@ -28,18 +30,30 @@ public class POIService implements IPOIService {
 
     @Override
     public POIItem findOne(long id) {
-        //TODO: retrieve the matching entity from DB and convert to DTO if found, or throw NotFoundException if not available
-        return null;
+        return poiRepository.findById(id).map(p -> new POIItem(
+                p.getId(),
+                p.getName(),
+                p.getAddress(),
+                p.getLat(),
+                p.getLng()
+        )).orElseThrow(() -> new NotFoundException("L'item d'id " + id + " n'existe pas."));
     }
 
     @Override
     public void delete(long id) {
-        //TODO: delete the matching entity if found, or throw NotFoundException if not available
+        POI p = poiRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("L'item d'id " + id + " n'existe pas."));
+        poiRepository.delete(p);
     }
 
     @Override
     public POIItem save(POIDefinition poi) {
-        //TODO: save or update (depending on the presence of ID in the parameter) to DB and return the matching DTO
-        return null;
+        POI p = new POI();
+        p.setId(poi.getId());
+        p.setName(poi.getName());
+        p.setAddress(poi.getAddress());
+
+        p = poiRepository.save(p);
+        return new POIItem(p.getId(), p.getName(), p.getAddress(), p.getLat(), p.getLng());
     }
 }
